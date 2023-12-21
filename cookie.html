@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: url("https://www.iliketowastemytime.com/sites/default/files/infinite-space-hd-wallpaper.jpg") center / cover no-repeat fixed;
+            color: white;
+        }
+
+        h1, h2 {
+            color: #0066cc;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 25px;
+        }
+
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        p {
+            font-size: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="login-container">
+        <h1 style="font-size: 60px;">Educational Quiz</h1>
+        <button onclick="authenticateAndStartQuiz()">Start Quiz</button>
+    </div>
+
+    <div id="quiz-container" style="display: none;">
+        <h2>Question 1:</h2>
+        <p>What is the capital of France?</p>
+
+        <label>
+            <input type="radio" name="q1" value="a"> a) Berlin
+        </label>
+        <label>
+            <input type="radio" name="q1" value="b"> b) Madrid
+        </label>
+        <label>
+            <input type="radio" name="q1" value="c"> c) Paris
+        </label>
+
+        <h2>Question 2:</h2>
+        <p>Who was the first President of India?</p>
+        <label>
+            <input type="radio" name="q2" value="a"> a) Dr. Rajendra Prasad
+        </label>
+        <label>
+            <input type="radio" name="q2" value="b"> b) Droupadi Murmu
+        </label>
+        <label>
+            <input type="radio" name="q2" value="c"> c) Sarvepalli Radhakrishnan
+        </label>
+
+        <h2>Question 3:</h2>
+        <p>1024 Kilobytes is equal to?</p>
+        <label>
+            <input type="radio" name="q3" value="a"> a) MB
+        </label>
+        <label>
+            <input type="radio" name="q3" value="b"> b) GB
+        </label>
+        <label>
+            <input type="radio" name="q3" value="c"> c) TB
+        </label>
+
+        <h2>Question 4:</h2>
+        <p>Who was the first Prime Minister of India?</p>
+        <label>
+            <input type="radio" name="q4" value="a"> a) Jawaharlal Nehru
+        </label>
+        <label>
+            <input type="radio" name="q4" value="b"> b) Indira Gandhi
+        </label>
+        <label>
+            <input type="radio" name="q4" value="c"> c) Gulzari Lal Nanda
+        </label>
+
+        <h2>Question 5:</h2>
+        <p>Which planet is known as the Red Planet?</p>
+        <label>
+            <input type="radio" name="q5" value="a"> a) Venus
+        </label>
+        <label>
+            <input type="radio" name="q5" value="b"> b) Mars
+        </label>
+        <label>
+            <input type="radio" name="q5" value="c"> c) Jupiter
+        </label>
+
+        <h2>Question 6:</h2>
+        <p>What is the capital of Japan?</p>
+        <label>
+            <input type="radio" name="q6" value="a"> a) Beijing
+        </label>
+        <label>
+            <input type="radio" name="q6" value="b"> b) Seoul
+        </label>
+        <label>
+            <input type="radio" name="q6" value="c"> c) Tokyo
+        </label>
+
+        <p id="timer"></p>
+        <button onclick="checkAnswers()">Submit Answers</button>
+    </div>
+
+    <div id="result-container" style="display: none;">
+        <h2>Results</h2>
+        <p id="score"></p>
+    </div>
+
+    <script>
+        function authenticateAndStartQuiz() {
+            const expectedEmail = "example@gmail.com";
+            const expectedPassword = "examplePassword";
+
+            const enteredEmail = prompt("Enter your email:");
+            const enteredPassword = prompt("Enter your password:");
+
+            // Check if the entered email and password match the expected values
+            if (enteredEmail === expectedEmail && enteredPassword === expectedPassword) {
+                // Authentication successful, show the quiz
+                document.getElementById('quiz-container').style.display = 'block';
+                document.getElementById('login-container').style.display = 'none';
+                startQuiz(); // Start the timer and quiz
+            } else {
+                // Authentication failed or canceled, show an alert
+                alert("Authentication failed. Please try again.");
+            }
+        }
+
+        let timeLimit = 6 * 60; // 5 minutes in seconds
+        let timerInterval;
+
+        function startQuiz() {
+            // Set up the timer
+            displayTime();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function displayTime() {
+            const minutes = Math.floor(timeLimit / 60);
+            const seconds = timeLimit % 60;
+            document.getElementById('timer').innerText = `Time Left: ${minutes}m ${seconds}s`;
+        }
+
+        function updateTimer() {
+            if (timeLimit > 0) {
+                timeLimit--;
+                displayTime();
+            } else {
+                clearInterval(timerInterval);
+                alert("Time's up! Submit your answers.");
+                checkAnswers(); // Auto-submit when time is up
+            }
+        }
+
+        // The rest of your quiz script goes here
+
+        function checkAnswers() {
+            clearInterval(timerInterval);
+
+            const answers = ['c', 'a', 'a', 'a', 'b', 'c']; // Correct answers
+            let score = 0;
+            let resultHTML = '<h2>Results</h2>';
+
+            for (let i = 1; i <= answers.length; i++) {
+                const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+                const isCorrect = selectedAnswer && selectedAnswer.value === answers[i - 1];
+
+                resultHTML += `<p>Question ${i}: `;
+                resultHTML += isCorrect ? 'Correct' : 'Incorrect';
+                resultHTML += isCorrect ? '' : ` (Correct Answer: ${answers[i - 1]})`;
+                resultHTML += '</p>';
+
+                if (isCorrect) {
+                    score++;
+                }
+            }
+
+            // Display results
+            const resultContainer = document.getElementById('result-container');
+            const scoreElement = document.getElementById('score');
+            scoreElement.innerHTML = `You scored ${score} out of ${answers.length} correct.`;
+            resultContainer.innerHTML = resultHTML;
+            resultContainer.style.display = 'block';
+
+            // Hide quiz container
+            document.getElementById('quiz-container').style.display = 'none';
+           
+            showMarks(score, answers.length);
+        }
+
+        
+
+        function showMarks(score, totalQuestions) {
+            alert(`You scored ${score} out of ${totalQuestions} marks.`);
+        }
+    </script>
+
+</body>
+
+</html>
+
+
